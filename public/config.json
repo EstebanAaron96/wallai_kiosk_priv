@@ -1,0 +1,5 @@
+{
+  "apiBaseUrl": "https://sim-backend-django-45431692063.europe-west1.run.app",
+  "kioskToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxODE3NTcyNzEzLCJpYXQiOjE3ODYwMzY3MTMsImp0aSI6ImJkYmIwYzdiMTRmMzQ0ODE5Y2U2M2UzOGRjMTU5Zjk0IiwidXNlcl9pZCI6IjMyNDkiLCJzY29wZSI6Imtpb3NrIiwicGxhbnRfaWQiOjU2ODZ9.Qd0VkMJ_KVI-UpKiQK-Yb9gau4Lccme93DOj1yOo5K8",
+  "plantLabel": "Real Casino de Tenerife"
+}
