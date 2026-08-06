@@ -1,0 +1,78 @@
+.card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+  min-width: 0;
+  padding: 24px 28px;
+  border-radius: 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.iconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.iconWrap svg {
+  width: 28px;
+  height: 28px;
+}
+
+.accentSolar {
+  background: var(--color-solar-light);
+  color: var(--color-solar-dark);
+}
+
+.accentGrid {
+  background: var(--color-grid-light);
+  color: var(--color-grid-dark);
+}
+
+.accentLoad {
+  background: var(--color-load-light);
+  color: var(--color-load);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.valueRow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.value {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--color-ink);
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.unit {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-muted);
+  flex: none;
+}

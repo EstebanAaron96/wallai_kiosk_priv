@@ -1,0 +1,32 @@
+@import './styles/theme.css';
+
+* {
+  box-sizing: border-box;
+}
+
+/*
+ * La pantalla física de destino es un panel horizontal 3840×2160. En vez de
+ * fijar tamaños en px (que solo quedarían correctos a esa resolución exacta),
+ * el tamaño base de rem se ancla al ancho de la ventana con una referencia de
+ * diseño de 1920px de ancho (1920 / 16 = 120): a 3840px de ancho real
+ * (2× 1920, mismo 16:9) todo el layout en rem escala x2 automáticamente y
+ * llena la pantalla sin recalcular nada. También escala correctamente si
+ * Chrome reporta 1920 lógicos con devicePixelRatio 2 en vez de 3840 reales.
+ */
+html {
+  font-size: calc(100vw / 120);
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background: var(--color-bg);
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+}

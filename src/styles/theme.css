@@ -1,0 +1,40 @@
+/*
+ * Paleta oscura "glass/glow" tomada del diseño de referencia (MUPI Casino
+ * Tenerife - copia / Real Casino de Tenerife - Vision Fotovoltaica.html).
+ * Se mantienen los mismos nombres de variable que la versión clara anterior
+ * (--color-*) para no tener que reescribir cada componente, solo sus valores.
+ */
+:root {
+  --color-bg: #050608;
+  --color-surface: #0b0d10;
+  --color-surface-2: #121519;
+
+  --color-glass: rgba(21, 24, 29, 0.72);
+  --color-glass-soft: rgba(255, 255, 255, 0.052);
+  --color-border: rgba(255, 255, 255, 0.13);
+  --color-border-soft: rgba(255, 255, 255, 0.075);
+
+  --color-ink: #f5f2ec;
+  --color-muted: rgba(245, 242, 236, 0.66);
+  --color-muted-light: rgba(245, 242, 236, 0.42);
+
+  --color-solar: #43d7ff;
+  --color-solar-light: rgba(67, 215, 255, 0.18);
+  --color-solar-dark: #1fa8d1;
+
+  --color-grid: #d0a14d;
+  --color-grid-light: rgba(208, 161, 77, 0.15);
+  --color-grid-dark: #a87c33;
+
+  --color-load: #f5f2ec;
+  --color-load-light: rgba(245, 242, 236, 0.4);
+
+  --color-gold: #b99b61;
+  --color-warm-white: #fffaf0;
+
+  --color-ok: #43d7ff;
+  --color-warn: #d0a14d;
+  --color-danger: #ff6b6b;
+
+  --font-sans: 'Inter', Helvetica, Arial, sans-serif;
+}

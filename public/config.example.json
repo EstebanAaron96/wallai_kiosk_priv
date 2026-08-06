@@ -1,0 +1,12 @@
+{
+  "_comment": "Copia este archivo como config.json en el servidor de despliegue y rellena los valores reales. config.json NUNCA se versiona ni se compila dentro del bundle: se lee en runtime con fetch('/config.json') antes de renderizar la app.",
+
+  "apiBaseUrl": "https://backend.wallai.example.com",
+  "_apiBaseUrl_comment": "URL base del backend Django de wallAi (sin barra final). El frontend le añade /api/data/... a esta URL.",
+
+  "kioskToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9....",
+  "_kioskToken_comment": "JWT de kiosco (scope=kiosk) generado por el endpoint admin-only POST /api/data/kiosk_token/. Restringe el acceso a una única planta. Rotar aquí sin recompilar el frontend.",
+
+  "plantLabel": "Real Casino de Tenerife - Hall",
+  "_plantLabel_comment": "Opcional. Texto mostrado en cabecera mientras se carga el primer snapshot real de la planta."
+}

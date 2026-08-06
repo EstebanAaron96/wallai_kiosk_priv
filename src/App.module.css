@@ -1,0 +1,65 @@
+.app {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: var(--color-bg);
+  font-family: var(--font-sans);
+  overflow: hidden;
+}
+
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 30%, rgba(67, 215, 255, 0.05), transparent 45%),
+    linear-gradient(180deg, #0d1216 0%, #050608 64%, #030405 100%);
+}
+
+.centerScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100vw;
+  height: 100vh;
+  background: var(--color-bg);
+  font-family: var(--font-sans);
+  text-align: center;
+  padding: 0 10%;
+}
+
+.brandSplash {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--color-ink);
+}
+
+.spinner {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 0.25rem solid var(--color-border);
+  border-top-color: var(--color-solar);
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.errorTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-danger);
+}
+
+.errorDetail {
+  max-width: 40rem;
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
