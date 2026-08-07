@@ -17,14 +17,26 @@ interface LabelSpec {
   caption: string
   anchor: string
   color: string
-  /** Offset from the anchor, as a fraction of the scene size. */
-  lift: number
+  /**
+   * Where the card sits relative to its Empty, as fractions of the scene size.
+   * The Empties mark electrical connection points, which are by definition inside
+   * the equipment — so a card pinned straight onto one covers the very thing it
+   * is labelling. These push each card out into clear space instead.
+   */
+  offset: readonly [number, number, number]
+  /** `below` hangs the card under the point rather than above it. */
+  side?: 'above' | 'below'
 }
 
 const SPECS: readonly LabelSpec[] = [
-  { id: 'grid', caption: 'Red', anchor: 'Grid', color: palette.grid, lift: 0.10 },
-  { id: 'generation', caption: 'Generación', anchor: 'PV-Juntas', color: palette.solar, lift: 0.14 },
-  { id: 'consumption', caption: 'Consumo', anchor: 'Load', color: palette.consumption, lift: 0.06 },
+  // Just over the pylon head — close enough to read as its label, high enough to
+  // clear the ironwork.
+  { id: 'grid', caption: 'Red', anchor: 'Grid', color: palette.grid, offset: [0, 0.27, 0] },
+  // Clear of the roof and the panel rows.
+  { id: 'generation', caption: 'Generación', anchor: 'PV-Juntas', color: palette.solar, offset: [0, 0.14, 0] },
+  // Tucked under the near corner of the building rather than out in the open,
+  // so it reads as belonging to the casino and not floating beside it.
+  { id: 'consumption', caption: 'Consumo', anchor: 'Load', color: palette.consumption, offset: [0.08, -0.16, 0.04], side: 'below' },
 ] as const
 
 export interface SceneLabels {
@@ -55,9 +67,13 @@ export function createSceneLabels(empties: Map<string, Object3D>, sceneSize: num
     values.set(spec.id, element.querySelector<HTMLElement>('.kpi__value')!)
     states.set(spec.id, element.querySelector<HTMLElement>('.kpi__state')!)
 
+    if (spec.side === 'below') element.classList.add('kpi--below')
+
     const label = new CSS2DObject(element)
     label.position.copy(anchor.getWorldPosition(new Vector3()))
-    label.position.y += sceneSize * spec.lift
+    label.position.x += sceneSize * spec.offset[0]
+    label.position.y += sceneSize * spec.offset[1]
+    label.position.z += sceneSize * spec.offset[2]
     object.add(label)
   }
 
