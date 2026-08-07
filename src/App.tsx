@@ -1,15 +1,14 @@
 import { useKioskConfig } from './hooks/useKioskConfig';
 import { useKioskData } from './hooks/useKioskData';
 import { useKioskAccumulated } from './hooks/useKioskAccumulated';
-import { Hero } from './components/Hero';
-import { EnergyFlowDiagram } from './components/EnergyFlowDiagram';
-import { AccumulatedPanel } from './components/AccumulatedPanel';
+import { Scene3D } from './casino/Scene3D';
+import { toEnergySnapshot } from './casino/toEnergySnapshot';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import styles from './App.module.css';
 
 function KioskApp() {
   const { config, isLoading: isConfigLoading, error: configError } = useKioskConfig();
-  const { data, error: dataError, isStale } = useKioskData(config);
+  const { data } = useKioskData(config);
   const { year, month } = useKioskAccumulated(config);
 
   if (isConfigLoading) {
@@ -36,26 +35,7 @@ function KioskApp() {
     );
   }
 
-  if (!data) {
-    return (
-      <div className={styles.centerScreen}>
-        <div className={styles.brandSplash}>{config?.plantLabel || 'Wall AI'}</div>
-        <div className={styles.spinner} />
-        <div className={styles.errorDetail}>
-          {dataError ?? 'Cargando datos de la planta…'}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className={styles.app}>
-      <div className={styles.ambient} />
-      <Hero name={data.name} address={data.address} isStale={isStale} />
-      <EnergyFlowDiagram flow={data.energy_flow_data ?? null} />
-      <AccumulatedPanel year={year} month={month} />
-    </div>
-  );
+  return <Scene3D snapshot={data ? toEnergySnapshot(data, year, month) : null} />;
 }
 
 function App() {
