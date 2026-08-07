@@ -2,8 +2,8 @@ import { createDonut, type Donut, type DonutColors } from './donut.ts'
 import type { EnergySnapshot } from '../data/types.ts'
 
 /**
- * Side panel: the two accumulated-energy rings. Year on top, current month below,
- * so the reader goes from the long view to the recent one.
+ * Side panel: the two accumulated-energy rings. Current month on top, year below —
+ * the recent figure is the one that changes, so it leads.
  */
 export interface Panel {
   element: HTMLElement
@@ -25,7 +25,7 @@ export function createPanel(colors: DonutColors): Panel {
   const year: Donut = createDonut({ title: 'Este año', caption: String(new Date().getFullYear()), colors })
   const month: Donut = createDonut({ title: 'Este mes', colors })
 
-  element.append(year.element, month.element)
+  element.append(month.element, year.element)
 
 
   return {

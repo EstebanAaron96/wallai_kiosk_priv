@@ -36,12 +36,16 @@
   box-sizing: border-box;
 }
 
-/* MUPI target is a 3840×2160 landscape panel. The whole UI is authored against a
-   1920-wide reference and scaled from the viewport, so 1rem = 16px at 1920 and
-   32px at 3840. Every size below is in rem for that reason — px would render at
-   half the intended size on the real panel. */
+/* The panel ships at 1460×900, 1460×600 and 1460×450 — same width, very
+   different heights. Scaling on width alone (as this did) leaves everything
+   sized for a tall screen and the panel overflows at 600 and 450, so the scale
+   takes whichever axis is tighter. Every size below is in rem for that reason. */
 html {
-  font-size: clamp(9px, calc(100vw / 1920 * 16), 40px);
+  /* 15px at 1460 wide (1.027vw) or at 760 tall (1.974vh), whichever is tighter.
+     Written in viewport units because `100vw / 1460` is a length, and multiplying
+     two lengths is invalid CSS — the browser drops the declaration and silently
+     falls back to 16px, which is exactly the bug this replaces. */
+  font-size: clamp(7px, min(1.027vw, 1.974vh), 34px);
 }
 
 html,
@@ -390,7 +394,7 @@ body {
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 2rem;
-  padding: 1.5rem 2.25rem;
+  padding: 1.15rem 1.9rem;
   background: var(--carbon);
   /* 2.9 — Espectro Kível as a structural delimiter, the manual's own use for it. */
   border-bottom: 0;
@@ -495,8 +499,16 @@ body {
 
 .kpi {
   transform: translate(-50%, -100%);
-  padding: 0.55rem 0.95rem 0.6rem;
-  border-radius: 0.75rem;
+}
+
+/* Hangs under its point instead of standing on it. */
+.kpi--below {
+  transform: translate(-50%, 0);
+}
+
+.kpi {
+  padding: 0.65rem 1.1rem 0.7rem;
+  border-radius: 1rem;
   background: rgb(10 22 52 / 88%);
   border: 0.0625rem solid rgb(255 255 255 / 14%);
   box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 38%);
@@ -509,8 +521,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
-  font-size: 0.72rem;
+  gap: 0.45rem;
+  font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -518,8 +530,8 @@ body {
 }
 
 .kpi__dot {
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 0.55rem;
+  height: 0.55rem;
   border-radius: 50%;
 }
 
@@ -532,7 +544,7 @@ body {
 }
 
 .kpi__value {
-  font-size: 1.85rem;
+  font-size: 2.2rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: #fff;
@@ -540,15 +552,15 @@ body {
 }
 
 .kpi__unit {
-  font-size: 0.8rem;
+  font-size: 0.92rem;
   font-weight: 600;
   color: rgb(255 255 255 / 58%);
 }
 
 .kpi__state {
   display: block;
-  margin-top: 0.15rem;
-  font-size: 0.66rem;
+  margin-top: 0.18rem;
+  font-size: 0.74rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   color: var(--grid);
@@ -766,6 +778,87 @@ body {
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--text-muted);
+}
+
+/* ============================================================
+   Short panels (1460×600 and 1460×450)
+   Two stacked rings need ~400 px of height. Below that they go side by side in a
+   wider panel — the screen is short but plenty wide, so the space is there.
+   ============================================================ */
+
+@media (max-height: 700px) {
+  /* A percentage, not rem: the panel must not shrink with the type scale, or the
+     rings end up tiny on exactly the screens that have the least height to spare. */
+  .stage {
+    grid-template-columns: 1fr 38%;
+  }
+
+  .panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Cards take the height they need and the group centres. Stretching the row
+       once the ring is capped just leaves it floating in a mostly empty card. */
+    grid-template-rows: auto auto;
+    align-content: center;
+    gap: 0.6rem 0.8rem;
+    padding: 0.9rem 1rem 1.1rem;
+  }
+
+  .panel__heading {
+    grid-column: 1 / -1;
+  }
+
+  .donut-card {
+    justify-content: space-between;
+    padding: 0.9rem 1rem 1rem;
+    min-height: 0;
+  }
+
+  /* The ring is the element that absorbs the leftover height. */
+  .donut-card__chart {
+    flex: 1;
+    min-height: 0;
+    padding: 0.5rem 0;
+  }
+
+  /* Grows into the spare height, but capped: left uncapped the ring swallows the
+     card on a very short screen, where the leftover height is greatest. The cap is
+     in vw because the panel width is fixed at 1460 across all three sizes. */
+  .donut {
+    width: auto;
+    height: 100%;
+    max-width: min(100%, 9vw);
+    max-height: 100%;
+    aspect-ratio: 1;
+    margin: 0 auto;
+  }
+
+  .powered-by {
+    bottom: 0.9rem;
+  }
+}
+
+/* Very short (1460×450): the rings carry the reading, the legend gets tight. */
+@media (max-height: 500px) {
+  .panel {
+    padding: 0.7rem 0.8rem 0.9rem;
+  }
+
+  .donut-card {
+    padding: 0.7rem 0.8rem 0.8rem;
+  }
+
+  .donut-card__chart {
+    padding: 0.35rem 0;
+  }
+
+  .donut-legend {
+    padding-top: 0.4rem;
+  }
+
+  .donut-legend__row {
+    padding: 0.12rem 0;
+  }
 }
 
 /* ============================================================
