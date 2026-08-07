@@ -35,6 +35,15 @@ const integer = new Intl.NumberFormat('es-ES')
 export interface Scene3DProps {
   /** null until the first real snapshot arrives; the scene idles at zero until then. */
   snapshot: EnergySnapshot | null
+  /**
+   * The backend rate-limits the accumulated-stats endpoint to 1 request/20s
+   * per kiosk token, so year and month are fetched ~20s apart — month is
+   * always the slower of the two. Until both have loaded at least once, the
+   * accumulated fields in `snapshot` are zero-filled placeholders, not real
+   * readings, so the panel is left on its own "-" placeholder instead of
+   * being fed misleading zeros.
+   */
+  accumulatedReady: boolean
 }
 
 interface SceneHandles {
@@ -100,7 +109,7 @@ function renderInspector(model: LoadedModel, report: NodeReport[]): string {
  * Three.js scene once, then pushes every new `snapshot` into it - the scene,
  * labels and panel code are untouched from the original design.
  */
-export function Scene3D({ snapshot }: Scene3DProps) {
+export function Scene3D({ snapshot, accumulatedReady }: Scene3DProps) {
   const appRef = useRef<HTMLDivElement>(null)
   const stageRef = useRef<HTMLDivElement>(null)
   const viewportRef = useRef<HTMLDivElement>(null)
@@ -115,6 +124,8 @@ export function Scene3D({ snapshot }: Scene3DProps) {
   const sceneRef = useRef<SceneHandles | null>(null)
   const snapshotRef = useRef<EnergySnapshot | null>(snapshot)
   snapshotRef.current = snapshot
+  const accumulatedReadyRef = useRef(accumulatedReady)
+  accumulatedReadyRef.current = accumulatedReady
 
   useEffect(() => {
     let cancelled = false
@@ -208,7 +219,7 @@ export function Scene3D({ snapshot }: Scene3DProps) {
       if (initial) {
         applySnapshot(flows, initial, theme.flow)
         labels.update(initial)
-        panel.update(initial)
+        if (accumulatedReadyRef.current) panel.update(initial)
       }
 
       // Frame budget matters on kiosk hardware, but the panel is public: hidden by
@@ -318,8 +329,8 @@ export function Scene3D({ snapshot }: Scene3DProps) {
     const { flows, labels, panel, theme } = sceneRef.current
     applySnapshot(flows, snapshot, theme.flow)
     labels.update(snapshot)
-    panel.update(snapshot)
-  }, [snapshot])
+    if (accumulatedReady) panel.update(snapshot)
+  }, [snapshot, accumulatedReady])
 
   return (
     <div id="app" ref={appRef}>

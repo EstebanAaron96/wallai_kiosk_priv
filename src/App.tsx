@@ -35,7 +35,12 @@ function KioskApp() {
     );
   }
 
-  return <Scene3D snapshot={data ? toEnergySnapshot(data, year, month) : null} />;
+  return (
+    <Scene3D
+      snapshot={data ? toEnergySnapshot(data, year, month) : null}
+      accumulatedReady={year !== null && month !== null}
+    />
+  );
 }
 
 function App() {
