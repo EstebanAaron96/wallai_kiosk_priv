@@ -252,9 +252,12 @@ export function Scene3D({ snapshot, accumulatedReady }: Scene3DProps) {
       function logFraming(): void {
         const { x, y } = viewer.getComposition()
         console.log(
-          'Encuadre  COMPOSITION = { x: ' + x.toFixed(3) + ', y: ' + y.toFixed(3) + ' }   ZOOM = ' + viewer.getZoom().toFixed(2),
+          'Encuadre  HERO_ANGLE = { azimuth: ' + hero.azimuth.toFixed(0) + ', elevation: ' + hero.elevation.toFixed(0) + ' }' +
+            '   COMPOSITION = { x: ' + x.toFixed(3) + ', y: ' + y.toFixed(3) + ' }   ZOOM = ' + viewer.getZoom().toFixed(2),
         )
       }
+
+      let hero = { ...HERO_ANGLE }
 
       // On-site controls. The MUPI has no input device, so these only matter when
       // a technician plugs a keyboard in.
@@ -294,6 +297,24 @@ export function Scene3D({ snapshot, accumulatedReady }: Scene3DProps) {
           case 'r':
             viewer.setComposition(COMPOSITION)
             viewer.setZoom(ZOOM)
+            hero = { ...HERO_ANGLE }
+            viewer.setHeroAngle(hero.azimuth, hero.elevation)
+            logFraming()
+            break
+
+          // Hero angle. Dragging with the mouse also turns the model, but the view
+          // eases back after half a minute — these change the angle it returns to.
+          case 'a':
+          case 'd':
+            hero.azimuth += event.key.toLowerCase() === 'd' ? (event.shiftKey ? 1 : 5) : (event.shiftKey ? -1 : -5)
+            viewer.setHeroAngle(hero.azimuth, hero.elevation)
+            logFraming()
+            break
+          case 'w':
+          case 'z':
+            hero.elevation = Math.max(2, Math.min(80,
+              hero.elevation + (event.key.toLowerCase() === 'w' ? (event.shiftKey ? 1 : 3) : (event.shiftKey ? -1 : -3))))
+            viewer.setHeroAngle(hero.azimuth, hero.elevation)
             logFraming()
             break
         }
