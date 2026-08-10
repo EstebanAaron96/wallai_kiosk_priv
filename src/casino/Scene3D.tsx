@@ -158,6 +158,9 @@ export function Scene3D({ snapshot, accumulatedReady }: Scene3DProps) {
       cleanups.push(resilience.dispose)
 
       const viewer = createViewer(canvas, {
+        // Idle orbiting is built and reachable, it just is not what the kiosk
+        // does when left alone.
+        autoRotate: false,
         compositionX: COMPOSITION.x,
         compositionY: COMPOSITION.y,
         heroAzimuthDegrees: HERO_ANGLE.azimuth,
