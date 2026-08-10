@@ -17,7 +17,7 @@ import { createSceneLabels, type SceneLabels } from './ui/scene-labels.ts'
 import './casino.css'
 
 const MODEL_URL = '/escena.glb'
-const PLANT_TITLE = 'Casino'
+const PLANT_TITLE = 'Real Casino de Tenerife'
 const PLANT_SUBTITLE = 'Flujo de energia en tiempo real'
 
 /**
