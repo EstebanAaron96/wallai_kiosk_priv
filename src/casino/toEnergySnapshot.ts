@@ -16,12 +16,12 @@ function toAccumulated(period: AccumulatedPeriod | null): { fotovoltaica_kWh: nu
  * AccumulatedPeriod) onto the wire format the ported Casino scene/UI expect.
  *
  * Two approximations, both because the backend doesn't expose what the 3D
- * model's two physical PV rows need:
+ * model's three physical PV rows need:
  * - red_kW: the backend gives a signless magnitude (gridKw) plus direction
  *   flags (rc importing / pr exporting); this converts that into the signed
  *   value the scene's single reversible Grid<->Load route expects.
- * - generacion_pv1_kW / pv2_kW: the backend only reports total PV output,
- *   not per-row — split evenly across both scene routes.
+ * - generacion_pv1_kW / pv2_kW / pv3_kW: the backend only reports total PV
+ *   output, not per-row — split evenly across all three scene routes.
  */
 export function toEnergySnapshot(
   plant: PlantSnapshot,
@@ -30,11 +30,13 @@ export function toEnergySnapshot(
 ): EnergySnapshot {
   const flow = plant.energy_flow_data
   const redKw = flow ? (flow.rc ? flow.gridKw : flow.pr ? -flow.gridKw : 0) : 0
+  const pvShare = (flow?.pvKw ?? 0) / 3
 
   return {
     red_kW: redKw,
-    generacion_pv1_kW: (flow?.pvKw ?? 0) / 2,
-    generacion_pv2_kW: (flow?.pvKw ?? 0) / 2,
+    generacion_pv1_kW: pvShare,
+    generacion_pv2_kW: pvShare,
+    generacion_pv3_kW: pvShare,
     consumo_kW: flow?.loadKw ?? 0,
     acumulado_anual: toAccumulated(year),
     acumulado_mes: { mes: MONTHS[new Date().getMonth()] ?? '', ...toAccumulated(month) },

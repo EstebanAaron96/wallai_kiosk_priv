@@ -23,8 +23,15 @@ export function drivesFromSnapshot(
   const exporting = snapshot.red_kW < 0
 
   return {
+    // Spurs carry their own array. PV1 ties into the PV3 run, so that branch
+    // carries both from the tie point on; the trunk carries everything.
     pv1: { power: snapshot.generacion_pv1_kW, direction: 1, color: flowColors.solar },
     pv2: { power: snapshot.generacion_pv2_kW, direction: 1, color: flowColors.solar },
+    pv3: {
+      power: (snapshot.generacion_pv3_kW ?? 0) + snapshot.generacion_pv1_kW,
+      direction: 1,
+      color: flowColors.solar,
+    },
     'pv-to-load': { power: generation, direction: 1, color: flowColors.solar },
     'grid-load': {
       power: Math.abs(snapshot.red_kW),

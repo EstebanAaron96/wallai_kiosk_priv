@@ -1,7 +1,10 @@
 /**
- * Wire format the 3D scene/UI consume, ported as-is from the Casino design
- * (src/data/types.ts). Field names are the Spanish ones the scene modules
- * already expect — kept unchanged so scene/ui code needed zero edits.
+ * Wire format of the plant telemetry.
+ *
+ * Field names are intentionally the Spanish ones from the API contract — this is
+ * the one place where the backend's vocabulary wins over the codebase's English,
+ * because the shape has to survive being swapped for a real WebSocket/REST feed
+ * without touching anything downstream.
  */
 export interface EnergySnapshot {
   /**
@@ -12,6 +15,12 @@ export interface EnergySnapshot {
   red_kW: number
   generacion_pv1_kW: number
   generacion_pv2_kW: number
+  /**
+   * Third array, added when the model grew a third origin point. Optional so a
+   * feed that only reports two strings still satisfies the contract — it simply
+   * reads as zero and that flow fades out.
+   */
+  generacion_pv3_kW?: number
   consumo_kW: number
   acumulado_anual: AccumulatedEnergy
   acumulado_mes: AccumulatedEnergy & { mes: string }
@@ -22,9 +31,25 @@ export interface AccumulatedEnergy {
   red_kWh: number
 }
 
-/** Total photovoltaic output across both rows. */
+export type SnapshotListener = (snapshot: EnergySnapshot) => void
+
+/**
+ * Everything downstream depends only on this. Replacing the simulator with a
+ * live feed means writing another implementation of this interface — the scene,
+ * the labels and the charts stay untouched.
+ */
+export interface EnergySource {
+  /** Latest value, or null before the first one arrives. */
+  getSnapshot(): EnergySnapshot | null
+  /** Returns an unsubscribe function. */
+  subscribe(listener: SnapshotListener): () => void
+  start(): void
+  stop(): void
+}
+
+/** Total photovoltaic output across every array. */
 export function totalGeneration(snapshot: EnergySnapshot): number {
-  return snapshot.generacion_pv1_kW + snapshot.generacion_pv2_kW
+  return snapshot.generacion_pv1_kW + snapshot.generacion_pv2_kW + (snapshot.generacion_pv3_kW ?? 0)
 }
 
 /** True while the plant is pushing surplus back into the grid. */

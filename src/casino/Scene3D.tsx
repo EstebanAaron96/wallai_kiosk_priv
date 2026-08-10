@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import type { EnergySnapshot } from './data/types.ts'
 import { applySnapshot } from './scene/flow-binding.ts'
 import { createEnergyFlows, type EnergyFlowField } from './scene/energy-flow.ts'
-import { buildFlowCurves, ROUTES } from './scene/flow-curves.ts'
+import { buildFlowCurves, resolveRouteNames, ROUTES } from './scene/flow-curves.ts'
 import { createGroundShadow } from './scene/ground-shadow.ts'
 import { logHierarchy, type NodeReport } from './scene/inspect.ts'
 import { applyModelFixes } from './scene/model-fixes.ts'
@@ -60,11 +60,12 @@ function renderInspector(model: LoadedModel, report: NodeReport[]): string {
   const found = new Set(empties.map((node) => node.name))
 
   const routeRows = ROUTES.map((route) => {
-    const ok = found.has(route.from) && found.has(route.to)
+    const names = resolveRouteNames(model.empties, route.through)
+    const ok = names.every((name) => found.has(name))
     const kind = route.id === 'grid-load' ? 'grid' : 'solar'
     return '<tr class="' + (ok ? '' : 'is-missing') + '">' +
       '<td><span class="dot dot--' + kind + '"></span>' + route.label + '</td>' +
-      '<td class="mono">' + route.from + ' -&gt; ' + route.to + '</td>' +
+      '<td class="mono">' + names.join(' -&gt; ') + '</td>' +
       '<td class="status">' + (ok ? 'OK' : 'X') + '</td>' +
       '</tr>'
   }).join('')

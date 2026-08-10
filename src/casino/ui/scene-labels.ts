@@ -32,8 +32,12 @@ const SPECS: readonly LabelSpec[] = [
   // Just over the pylon head — close enough to read as its label, high enough to
   // clear the ironwork.
   { id: 'grid', caption: 'Red', anchor: 'Grid', color: palette.grid, offset: [0, 0.27, 0] },
-  // Clear of the roof and the panel rows.
-  { id: 'generation', caption: 'Generación', anchor: 'PV-Juntas', color: palette.solar, offset: [0, 0.14, 0] },
+  // Clear of the roof and the panel rows. Pinned straight above the Empty the card
+  // lands on top of the panels, so it is also pushed sideways: at the hero azimuth
+  // (−35°) screen-left is the world direction (−0.82, 0, −0.57), and this offset
+  // walks 0.2 of the scene along it. Short of that the card clips the edge of the
+  // detached panel that sits off the roof's near corner.
+  { id: 'generation', caption: 'Generación', anchor: 'PV-Juntas', color: palette.solar, offset: [-0.16, 0.14, -0.11] },
   // Tucked under the near corner of the building rather than out in the open,
   // so it reads as belonging to the casino and not floating beside it.
   { id: 'consumption', caption: 'Consumo', anchor: 'Load', color: palette.consumption, offset: [0.08, -0.16, 0.04], side: 'below' },
