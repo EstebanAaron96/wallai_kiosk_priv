@@ -9,6 +9,12 @@ export interface Panel {
   element: HTMLElement
   update(snapshot: EnergySnapshot): void
   setColors(colors: DonutColors): void
+  /**
+   * Year and month come from separate, throttled API calls ~20s apart (see
+   * useKioskAccumulated), so each ring shows its own "Cargando…" state until its
+   * own period has actually loaded, rather than both waiting on the slower one.
+   */
+  setLoading(ready: { year: boolean; month: boolean }): void
 }
 
 export function createPanel(colors: DonutColors): Panel {
@@ -27,6 +33,8 @@ export function createPanel(colors: DonutColors): Panel {
 
   element.append(month.element, year.element)
 
+  year.setLoading(true)
+  month.setLoading(true)
 
   return {
     element,
@@ -39,6 +47,11 @@ export function createPanel(colors: DonutColors): Panel {
     setColors(next) {
       year.setColors(next)
       month.setColors(next)
+    },
+
+    setLoading(ready) {
+      year.setLoading(!ready.year)
+      month.setLoading(!ready.month)
     },
   }
 }

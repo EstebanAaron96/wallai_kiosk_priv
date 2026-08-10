@@ -665,12 +665,49 @@ body {
 }
 
 .donut-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: 1.25rem 1.4rem 1.35rem;
   border-radius: var(--radius-card);
   background: var(--surface);
   box-shadow: var(--shadow-card);
+}
+
+.donut-card__loading {
+  display: none;
+  position: absolute;
+  inset: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.donut-card.is-loading .donut-card__loading {
+  display: flex;
+}
+
+.donut-card__spinner {
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  border: 0.2rem solid rgb(122 122 122 / 25%);
+  border-top-color: var(--solar);
+  animation: donut-spin 0.9s linear infinite;
+}
+
+@keyframes donut-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .donut-card__spinner { animation: none; }
 }
 
 .donut-card__header {

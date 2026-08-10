@@ -40,6 +40,8 @@ export interface Donut {
   element: HTMLElement
   update(accumulated: AccumulatedEnergy, caption?: string): void
   setColors(colors: DonutColors): void
+  /** Covers the ring with a "Cargando…" overlay while its period hasn't loaded yet. */
+  setLoading(loading: boolean): void
 }
 
 function svg(tag: string, attributes: Record<string, string>): SVGElement {
@@ -67,7 +69,11 @@ export function createDonut({ title, caption, colors }: DonutOptions): Donut {
         <dt><span class="donut-legend__dot" style="background:${colors.grid}"></span>Red eléctrica</dt>
         <dd><span class="donut-legend__value">—</span><span class="donut-legend__unit">kWh</span></dd>
       </div>
-    </dl>`
+    </dl>
+    <div class="donut-card__loading" aria-hidden="true">
+      <span class="donut-card__spinner"></span>
+      <span>Cargando…</span>
+    </div>`
 
   const chart = element.querySelector<HTMLElement>('.donut-card__chart')!
   const captionNode = element.querySelector<HTMLElement>('.donut-card__caption')!
@@ -162,6 +168,10 @@ export function createDonut({ title, caption, colors }: DonutOptions): Donut {
 
   return {
     element,
+
+    setLoading(loading) {
+      element.classList.toggle('is-loading', loading)
+    },
 
     setColors(next) {
       trackCircle.setAttribute('stroke', next.track)
