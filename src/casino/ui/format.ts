@@ -16,8 +16,13 @@ export const formatEnergy = (kWh: number): string => energy.format(kWh)
 /** Share as a percentage, e.g. `25,0`. Takes a 0..1 ratio. */
 export const formatPercent = (ratio: number): string => percent.format(ratio * 100)
 
-const time = new Intl.DateTimeFormat('es-ES', { hour: '2-digit', minute: '2-digit' })
-const date = new Intl.DateTimeFormat('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })
+// Reloj de cabecera anclado a Canarias: el dispositivo puede tener cualquier
+// zona horaria configurada, pero el kiosco siempre muestra la hora local de
+// la planta.
+const CANARY_TZ = 'Atlantic/Canary'
+
+const time = new Intl.DateTimeFormat('es-ES', { hour: '2-digit', minute: '2-digit', timeZone: CANARY_TZ })
+const date = new Intl.DateTimeFormat('es-ES', { weekday: 'long', day: 'numeric', month: 'long', timeZone: CANARY_TZ })
 
 export const formatTime = (value: Date): string => time.format(value)
 

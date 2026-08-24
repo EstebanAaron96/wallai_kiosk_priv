@@ -1,6 +1,7 @@
 import type { EnergySnapshot } from './data/types.ts'
 import type { PlantSnapshot } from '../types/PlantData.ts'
 import type { AccumulatedPeriod } from '../hooks/useKioskAccumulated.ts'
+import { nowInCanary } from '../utils/canaryTime.ts'
 
 const MONTHS = [
   'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -39,6 +40,6 @@ export function toEnergySnapshot(
     generacion_pv3_kW: pvShare,
     consumo_kW: flow?.loadKw ?? 0,
     acumulado_anual: toAccumulated(year),
-    acumulado_mes: { mes: MONTHS[new Date().getMonth()] ?? '', ...toAccumulated(month) },
+    acumulado_mes: { mes: MONTHS[nowInCanary().getMonth()] ?? '', ...toAccumulated(month) },
   }
 }

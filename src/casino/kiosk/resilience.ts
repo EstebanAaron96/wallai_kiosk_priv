@@ -1,3 +1,5 @@
+import { nowInCanary } from '../../utils/canaryTime.ts'
+
 /**
  * Keeping an unattended panel alive.
  *
@@ -10,7 +12,7 @@ export interface ResilienceOptions {
   canvas: HTMLCanvasElement
   /** Called when the GPU context comes back and the scene must be rebuilt. */
   onContextRestored?: () => void
-  /** Local hour (0–23) for the nightly refresh. */
+  /** Hour (0–23) in the Canary Islands for the nightly refresh. */
   reloadAtHour?: number
   /** Skip the nightly refresh entirely. */
   disableScheduledReload?: boolean
@@ -100,7 +102,9 @@ function scheduleNightlyReload(hour: number): () => void {
   let timer: ReturnType<typeof setTimeout> | null = null
 
   const arm = (): void => {
-    const now = new Date()
+    // La hora de referencia es siempre la de Canarias, sin importar la zona
+    // horaria que tenga configurada el dispositivo.
+    const now = nowInCanary()
     const next = new Date(now)
     next.setHours(hour, 0, 0, 0)
     if (next <= now) next.setDate(next.getDate() + 1)
@@ -109,7 +113,7 @@ function scheduleNightlyReload(hour: number): () => void {
     timer = setTimeout(() => {
       // setTimeout drifts badly over many hours and does not fire while a
       // machine is asleep, so confirm the wall clock before acting.
-      if (new Date().getHours() === hour) window.location.reload()
+      if (nowInCanary().getHours() === hour) window.location.reload()
       else arm()
     }, Math.min(delay, 3_600_000))
   }

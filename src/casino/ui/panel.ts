@@ -1,5 +1,6 @@
 import { createDonut, type Donut, type DonutColors } from './donut.ts'
 import type { EnergySnapshot } from '../data/types.ts'
+import { nowInCanary } from '../../utils/canaryTime.ts'
 
 /**
  * Side panel: the two accumulated-energy rings. Current month on top, year below —
@@ -28,7 +29,7 @@ export function createPanel(colors: DonutColors): Panel {
     <span class="live"><span class="live__dot"></span>En directo</span>`
   element.append(heading)
 
-  const year: Donut = createDonut({ title: 'Este año', caption: String(new Date().getFullYear()), colors })
+  const year: Donut = createDonut({ title: 'Este año', caption: String(nowInCanary().getFullYear()), colors })
   const month: Donut = createDonut({ title: 'Este mes', colors })
 
   element.append(month.element, year.element)

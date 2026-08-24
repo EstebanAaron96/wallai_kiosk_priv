@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { KioskConfig } from '../types/KioskConfig';
 import { fetchPlantStatistics } from '../api/kioskClient';
+import { nowInCanary } from '../utils/canaryTime';
 
 const POLL_INTERVAL_MS = 10 * 60_000;
 // El backend limita get_plant_statistics a 1 petición/20s por token de
@@ -60,7 +61,7 @@ export function useKioskAccumulated(config: KioskConfig | null): UseKioskAccumul
     let timeoutId: ReturnType<typeof setTimeout>;
 
     const poll = async () => {
-      const now = new Date();
+      const now = nowInCanary();
       let lastError: string | null = null;
 
       try {
