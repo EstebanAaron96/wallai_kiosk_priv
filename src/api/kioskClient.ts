@@ -43,12 +43,31 @@ async function kioskFetch(url: string, config: KioskConfig): Promise<unknown> {
   }
 }
 
-/** Formatea una Date como "YYYY-MM-DD", el formato que espera el backend. */
+/**
+ * Formatea una Date como "YYYY-MM-DDTHH:mm:ss" (sin "Z"/offset).
+ *
+ * CORREGIDO: antes solo se mandaba la fecha ("YYYY-MM-DD", sin hora), y el
+ * backend interpreta una fecha sin hora como medianoche de ese día -- es
+ * decir, `end_date` nunca representaba "ahora mismo", sino "medianoche de
+ * hoy". Esto dejaba siempre fuera del acumulado las horas ya transcurridas
+ * del día en curso, y el día 1 de cada mes volvía un rango de ancho cero
+ * (start_date == end_date == medianoche de hoy), devolviendo todo en 0.
+ *
+ * Se usan los getters locales (no .toISOString()) porque `date` ya viene
+ * construida con los valores de reloj de Canarias vía nowInCanary() --
+ * leerlos con getters locales reproduce fielmente esa hora de pared; usar
+ * getTime()/toISOString() aquí convertiría mal el instante, ya que el
+ * objeto Date interno no corresponde a un epoch real de Canarias salvo que
+ * el dispositivo esté también en esa zona horaria.
+ */
 function toDateParam(date: Date): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  const hour = String(date.getHours()).padStart(2, '0');
+  const minute = String(date.getMinutes()).padStart(2, '0');
+  const second = String(date.getSeconds()).padStart(2, '0');
+  return `${year}-${month}-${day}T${hour}:${minute}:${second}`;
 }
 
 export async function fetchCurrentSnapshot(config: KioskConfig): Promise<PlantSnapshot> {
